@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beam Wellbeing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="beam-interactive-dashboard-styles.css">
+    <!-- Firebase SDKs - Configuration -->
+    <script type="module" src="beam-interactive-dashboard-firebase-config.js"></script>
+    
+</head>
+<body class="text-gray-800">
+
+    <div class="flex h-screen bg-gray-50">
+        <!-- Sidebar Navigation -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-r">
+            <div class="flex items-center justify-center h-20 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-yellow-300 flex items-center justify-center">
+                        <span class="text-white text-xl font-bold">✧</span>
+                    </div>
+                    <span class="text-2xl font-bold text-gray-800">Beam</span>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a id="nav-dashboard" class="nav-link active flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">📊</span> Dashboard
+                </a>
+                <a id="nav-check-in" class="nav-link flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">❤️</span> Check-in
+                </a>
+                <a id="nav-companion" class="nav-link flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">💬</span> Companion
+                </a>
+                <a id="nav-calm-space" class="nav-link flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">🧘‍♀️</span> Calm Space
+                </a>
+                <a id="nav-step-challenge" class="nav-link flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">👟</span> Activity Challenge
+                </a>
+                <a id="nav-settings" class="nav-link flex items-center px-4 py-3">
+                    <span class="text-xl mr-3">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <header class="md:hidden flex items-center justify-between p-4 bg-white border-b">
+                 <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-yellow-300 flex items-center justify-center">
+                        <span class="text-white text-xl font-bold">✧</span>
+                    </div>
+                    <span class="text-2xl font-bold text-gray-800">Beam</span>
+                </div>
+                <div>
+                    <select id="mobile-nav" class="rounded-lg border-gray-300 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="dashboard">Dashboard</option>
+                        <option value="check-in">Check-in</option>
+                        <option value="companion">Companion</option>
+                        <option value="calm-space">Calm Space</option>
+                        <option value="step-challenge">Activity Challenge</option>
+                        <option value="settings">Settings</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- Landing Page View -->
+            <div id="landingPageView" class="flex-1 flex flex-col items-center justify-center p-6 md:p-10 text-center bg-gradient-to-br from-purple-100 to-yellow-100">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-400 to-yellow-300 flex items-center justify-center">
+                            <span class="text-white text-4xl font-bold">✧</span>
+                        </div>
+                        <span class="text-5xl font-bold text-gray-900 ml-4">Beam</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">Welcome to Beam</h1>
+                    <p class="mt-4 text-lg md:text-xl text-gray-700 leading-relaxed">
+                        Your reflective companion for psychosocial safety and equity. Fostering dignified, trauma-informed experiences that support both individual wellbeing and organizational transformation.
+                    </p>
+                    <div class="mt-8 space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center">
+                        <button id="startCheckInLandingBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                            Start Your Check-in
+                        </button>
+                        <button id="viewDashboardLandingBtn" class="bg-white hover:bg-gray-100 text-purple-700 font-bold py-3 px-8 rounded-full shadow-lg border border-purple-200 transition-all duration-300 ease-in-out">
+                            View Dashboard
+                        </button>
+                    </div>
+
+                    <div class="mt-16 pt-8 border-t border-purple-200">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Illuminate Your Path to Wellbeing</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="p-6 bg-white rounded-2xl shadow-md">
+                                <h3 class="text-xl font-semibold text-purple-700 mb-3">Deep Integration</h3>
+                                <p class="text-gray-600">
+                                    Beam integrates reflective practices with equity and psychosocial safety principles, offering tools and insights to create safer, more inclusive environments and data-driven approaches to building more equitable workplaces.
+                                </p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl shadow-md">
+                                <h3 class="text-xl font-semibold text-purple-700 mb-3">Daily Reflections</h3>
+                                <p class="text-gray-600">
+                                    Gentle prompts to nurture self-awareness and emotional wellbeing, alongside tools and insights to create safer, more inclusive environments and data-driven approaches to building more equitable workplaces.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authentication View (Login/Signup) -->
+            <div id="authView" class="hidden flex-1 flex flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-br from-purple-100 to-yellow-100">
+                <div class="max-w-md w-full bg-white rounded-2xl p-8 shadow-xl text-center">
+                    <h2 id="authTitle" class="text-3xl font-bold text-gray-900 mb-6">Login to Beam</h2>
+                    <p id="authError" class="text-red-500 mb-4 hidden"></p>
+                    <form id="authForm" class="space-y-6">
+                        <div>
+                            <label for="authEmail" class="sr-only">Email</label>
+                            <input type="email" id="authEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Email address" required>
+                        </div>
+                        <div>
+                            <label for="authPassword" class="sr-only">Password</label>
+                            <input type="password" id="authPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Password" required>
+                        </div>
+                        <div id="authDisplayNameGroup" class="hidden">
+                            <label for="authDisplayName" class="sr-only">Display Name</label>
+                            <input type="text" id="authDisplayName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Display Name (for leaderboard)">
+                        </div>
+                        <button type="submit" id="authSubmitBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                            Login
+                        </button>
+                    </form>
+                    <div class="mt-6 text-sm text-gray-600">
+                        <span id="authToggleText">Don't have an account?</span>
+                        <button id="authToggleButton" class="text-purple-600 hover:text-purple-800 font-semibold ml-1">Sign Up</button>
+                    </div>
+                     <div class="mt-4 text-sm text-gray-600">
+                        <button id="continueAsGuestBtn" class="text-blue-500 hover:text-blue-700 underline">Continue as Guest</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="hidden flex-1 overflow-y-auto p-6 md:p-10">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Your Wellbeing Dashboard</h1>
+                <p class="mt-2 text-gray-600">Track your journey toward psychological safety and equity.</p>
+                <p class="text-sm text-gray-500 mt-1" id="dashboardLastUpdated">Last updated: Today, 30/07/2025</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    <!-- Wellbeing Score Card -->
+                    <div class="metric-card">
+                        <div class="flex justify-between items-start">
+                            <h2 class="text-lg font-semibold text-gray-700">Wellbeing Score</h2>
+                            <span class="tag tag-yellow" id="wellbeingChange">+0.0 this week</span>
+                        </div>
+                        <p class="text-4xl font-bold mt-4"><span id="wellbeingScore">0.0</span> <span class="text-2xl text-gray-500">/ 10</span></p>
+                        <div class="progress-bar mt-4">
+                            <div class="progress-bar-inner" style="width: 0%;" id="wellbeingProgressBar"></div>
+                        </div>
+                    </div>
+                    <!-- Psychological Safety Card -->
+                    <div class="metric-card">
+                        <div class="flex justify-between items-start">
+                            <h2 class="text-lg font-semibold text-gray-700">Psychological Safety</h2>
+                             <span class="tag tag-yellow" id="safetyChange">+0.0 this week</span>
+                        </div>
+                        <p class="text-4xl font-bold mt-4"><span id="safetyScore">0.0</span> <span class="text-2xl text-gray-500">/ 10</span></p>
+                        <div class="progress-bar mt-4">
+                            <div class="progress-bar-inner" style="width: 0%;" id="safetyProgressBar"></div>
+                        </div>
+                    </div>
+                    <!-- Inclusion Index Card -->
+                    <div class="metric-card">
+                        <div class="flex justify-between items-start">
+                            <h2 class="text-lg font-semibold text-gray-700">Inclusion Index</h2>
+                             <span class="tag tag-yellow" id="inclusionChange">+0.0 this week</span>
+                        </div>
+                        <p class="text-4xl font-bold mt-4"><span id="inclusionScore">0.0</span> <span class="text-2xl text-gray-500">/ 10</span></p>
+                        <div class="progress-bar mt-4">
+                            <div class="progress-bar-inner" style="width: 0%;" id="inclusionProgressBar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analyze Scores Button -->
+                <div class="mt-8 text-center">
+                    <button id="analyzeScoresBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                        Analyze My Scores ✨
+                    </button>
+                    <div id="analysisLoading" class="hidden mt-4 text-purple-600">Loading analysis...</div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                    <div class="lg:col-span-2 metric-card">
+                        <h2 class="text-xl font-bold mb-4">Weekly Trends</h2>
+                        <div class="chart-container">
+                            <canvas id="weeklyTrendsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h2 class="text-xl font-bold mb-4">✧ Personal Insights</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold">Positive Trend</h3>
+                                    <span class="tag tag-green">Improving</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">Your wellbeing scores have improved by 15% this month.</p>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold">Reflection Consistency</h3>
+                                    <span class="tag tag-blue">Consistent</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">You've completed 6 out of 7 check-ins this week.</p>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold">Areas of Growth</h3>
+                                    <span class="tag tag-yellow">Opportunity</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">Consider exploring community connection opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check-in View -->
+            <div id="checkInView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Daily Check-in</h1>
+                    <p class="mt-2 text-gray-600">Take a moment to check in with yourself.</p>
+                </div>
+
+                <div class="check-in-container metric-card flex-1 flex flex-col justify-between">
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+                        <div class="bg-purple-600 h-2.5 rounded-full" id="checkInProgressBar" style="width: 0%;"></div>
+                    </div>
+
+                    <!-- Step Content -->
+                    <div id="checkInStepContent" class="flex-1 flex flex-col items-center justify-center text-center">
+                        <!-- Content for each step will be injected here -->
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button id="checkInBackBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full transition-colors hidden">
+                            ← Back
+                        </button>
+                        <button id="checkInNextBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition-colors ml-auto">
+                            Next →
+                        </button>
+                        <button id="completeCheckInBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors hidden ml-auto">
+                            Complete Check-in
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Companion View (AI Chat) -->
+            <div id="companionView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Your Beam Companion</h1>
+                    <p class="mt-2 text-gray-600">A safe space for reflection, support, and trauma-informed dialogue.</p>
+                </div>
+
+                <div id="chat-window" class="flex-1 bg-white rounded-2xl p-6 overflow-y-auto space-y-4 shadow-inner">
+                    <!-- Chat messages will be appended here -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center flex-shrink-0">
+                           <span class="text-lg">💬</span>
+                        </div>
+                        <div class="chat-bubble chat-bubble-bot">
+                            <p>Hello! I'm your Beam companion. I'm here to support you with gentle, trauma-informed conversations about your wellbeing, workplace experiences, and reflections. How are you feeling today?</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="chat-form" class="mt-4">
+                    <div class="flex flex-col sm:flex-row items-center bg-white rounded-full p-2 shadow-md">
+                        <input id="chat-input" type="text" placeholder="Share your thoughts, feelings, or questions..." class="flex-1 w-full bg-transparent px-4 py-2 text-gray-700 focus:outline-none">
+                        <button type="submit" class="bg-purple-600 text-white rounded-full p-3 hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 mt-2 sm:mt-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Calm Space View -->
+            <div id="calmSpaceView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Your Calm Space</h1>
+                    <p class="mt-2 text-gray-600">Find peace through guided meditation and mindful reflection.</p>
+                </div>
+
+                <!-- Time-of-Day Reflection Block (Moved to Calm Space) -->
+                <div class="reflection-block">
+                    <h2 id="calmSpaceGreeting" class="text-xl font-bold mb-2"></h2>
+                    <p class="text-gray-600 mb-4">How are you feeling?</p>
+                    <div class="flex justify-center space-x-4">
+                        <button class="emoji-button" data-feeling="calm" data-target="journalingInput">😌</button>
+                        <button class="emoji-button" data-feeling="energetic" data-target="journalingInput">⚡</button>
+                        <button class="emoji-button" data-feeling="tired" data-target="journalingInput">😴</button>
+                        <button class="emoji-button" data-feeling="stressed" data-target="journalingInput">😟</button>
+                        <button class="emoji-button" data-feeling="hopeful" data-target="journalingInput">✨</button>
+                    </div>
+                    <div id="calmSpacePromptLoading" class="hidden mt-4 text-purple-600">Generating prompt...</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 overflow-y-auto">
+                    <!-- Meditation Video Player 1 -->
+                    <div class="metric-card flex flex-col items-center justify-center p-6">
+                        <h2 class="text-xl font-bold mb-4">Guided Meditation</h2>
+                        <div class="video-placeholder-container w-full h-48 md:h-64">
+                             <video controls preload="none" loop playsinline class="w-full h-full object-cover rounded-xl">
+                                <source src="https://storage.googleapis.com/example-bucket-1beamtrialversion/Download%20Guided_meditation_audio_fixed_v2.MP4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4">A gentle session to center your mind.</p>
+                    </div>
+
+                    <!-- Meditation Video Player 2 -->
+                    <div class="metric-card flex flex-col items-center justify-center p-6">
+                        <h2 class="text-xl font-bold mb-4">Yoga for Mindfulness</h2>
+                        <div class="video-placeholder-container w-full h-48 md:h-64">
+                            <video controls preload="none" loop playsinline class="w-full h-full object-cover rounded-xl">
+                                <source src="https://storage.googleapis.com/example-bucket-1beamtrialversion/Download%20Meditation_1_trimmed_25s.MP4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4">Flow with intention and release tension.</p>
+                    </div>
+
+                    <!-- Journaling Reflection Area -->
+                    <div class="lg:col-span-2 metric-card flex flex-col p-6">
+                        <h2 class="text-xl font-bold mb-4">Journaling for Reflection</h2>
+                        <p class="text-gray-600 mb-4">Use this space to jot down your thoughts, feelings, and insights from your meditation or daily experiences.</p>
+                        <textarea id="journalingInput" class="w-full flex-1 bg-gray-50 rounded-lg p-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500" rows="6" placeholder="Start writing your reflections here..."></textarea>
+                        <div class="flex justify-end space-x-3 mt-4">
+                            <button id="getJournalInsightBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                                Get Insight ✨
+                            </button>
+                            <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full">Save Reflection</button>
+                        </div>
+                        <p id="journalInsightOutput" class="text-gray-700 mt-4 hidden"></p>
+                        <div id="journalInsightLoading" class="hidden mt-2 text-purple-600 text-right">Generating insight...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step Challenge View -->
+            <div id="stepChallengeView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Activity Challenge</h1>
+                    <p class="mt-2 text-gray-600">Track your activity and compete with colleagues!</p>
+                </div>
+
+                <!-- User Name Input -->
+                <div id="userNameInputSection" class="metric-card mb-6 p-6 text-center">
+                    <h2 class="text-xl font-bold mb-4">Set Your Challenge Name</h2>
+                    <p class="text-gray-600 mb-4">Enter a name that will appear on the leaderboard for your activity.</p>
+                    <input type="text" id="userNameInput" placeholder="Your Name" class="w-full max-w-sm px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button id="saveUserNameBtn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors">Save Name</button>
+                </div>
+
+                <div id="stepChallengeContent" class="hidden flex-1 flex flex-col">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
+                        <!-- My Activity Card -->
+                        <div class="metric-card flex flex-col p-6">
+                            <h2 class="text-xl font-bold mb-4">My Activity This Week</h2>
+                            <p class="text-5xl font-extrabold text-purple-700 mt-4" id="myTotalActivityPoints">0</p>
+                            <p class="text-lg text-gray-600 mt-2" id="myDailyActivityPoints">Today: 0 points</p>
+                            <div class="mt-6 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                                <input type="number" id="activityInput" placeholder="Enter value" class="w-full sm:w-auto flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <select id="activityUnit" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="steps">Steps</option>
+                                    <option value="km">Kilometers</option>
+                                    <option value="miles">Miles</option>
+                                    <option value="points">Points</option>
+                                </select>
+                                <button id="addActivityBtn" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition-colors">Add Activity</button>
+                            </div>
+                            <p id="activityMessage" class="text-sm text-gray-500 mt-2"></p>
+                        </div>
+
+                        <!-- Team Management Card -->
+                        <div class="metric-card flex flex-col p-6">
+                            <h2 class="text-xl font-bold mb-4">Team Challenge</h2>
+                            <div id="teamStatus" class="mb-4">
+                                <p id="currentTeamDisplay" class="text-lg font-semibold text-gray-700">You are not part of a team.</p>
+                                <p id="currentTeamActivityPoints" class="text-md text-gray-600 hidden">Team Activity Points: 0</p>
+                            </div>
+                            <div id="teamJoinCreate" class="space-y-3">
+                                <input type="text" id="teamNameInput" placeholder="Enter Team Name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <div class="flex space-x-2">
+                                    <button id="createTeamBtn" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors">Create Team</button>
+                                    <button id="joinTeamBtn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors">Join Team</button>
+                                </div>
+                                <button id="leaveTeamBtn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors hidden">Leave Team</button>
+                            </div>
+                            <p id="teamMessage" class="text-sm text-gray-500 mt-2"></p>
+                        </div>
+
+                        <!-- Individual Leaderboard Card -->
+                        <div class="metric-card flex flex-col p-6 overflow-y-auto">
+                            <h2 class="text-xl font-bold mb-4">Individual Leaderboard</h2>
+                            <div id="leaderboardList" class="space-y-3">
+                                <p class="text-gray-500">Loading leaderboard...</p>
+                            </div>
+                            <div id="leaderboardLoading" class="hidden text-center mt-4 text-purple-600">Loading...</div>
+                        </div>
+
+                        <!-- Team Leaderboard Card -->
+                        <div class="metric-card flex flex-col p-6 overflow-y-auto">
+                            <h2 class="text-xl font-bold mb-4">Team Leaderboard</h2>
+                            <div id="teamLeaderboardList" class="space-y-3">
+                                <p class="text-gray-500">Loading team leaderboard...</p>
+                            </div>
+                            <div id="teamLeaderboardLoading" class="hidden text-center mt-4 text-purple-600">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Settings</h1>
+                    <p class="mt-2 text-gray-600">Manage your app experience and preferences.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 max-w-2xl mx-auto w-full">
+                    <!-- Account Settings -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Account Settings</h2>
+                        <div class="space-y-3">
+                            <button id="openProfileSettingsBtn" class="w-full text-left flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Edit Profile</span>
+                                <span class="text-gray-500">→</span>
+                            </button>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Change Password</span>
+                                <span class="text-gray-500">→</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Email Preferences</span>
+                                <span class="text-gray-500">→</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Notifications</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Daily check-in reminders</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggleDailyReminders">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Personalized insight alerts</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggleInsightAlerts">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data & Privacy -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Data & Privacy</h2>
+                        <div class="space-y-3">
+                            <button id="openDataPrivacySettingsBtn" class="w-full text-left flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Privacy Settings</span>
+                                <span class="text-gray-500">⚙️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Appearance -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Appearance</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Dark mode</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggleDarkMode">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Reduce animations</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggleReduceAnimations">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Beam -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">About Beam</h2>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="py-1">App Version: 1.0.0</p>
+                            <p class="py-1">Developed by: Lovable X</p>
+                            <div class="py-1">
+                                <a href="#" class="text-purple-600 hover:underline">Terms of Service</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <div class="text-center mt-6">
+                        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings View -->
+            <div id="profileSettingsView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Profile Settings</h1>
+                    <p class="mt-2 text-gray-600">Manage your personal information and preferences.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 max-w-2xl mx-auto w-full">
+                    <!-- Profile Information -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Profile Information</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="profile-avatar" id="profileAvatar">CD</div>
+                                <div>
+                                    <p class="font-semibold">Profile Picture</p>
+                                    <p class="text-sm text-gray-500">Avatar is automatically generated from your name</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="profileDisplayName" class="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                                <input type="text" id="profileDisplayName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Your Display Name">
+                            </div>
+                            <div>
+                                <label for="profileEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="profileEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed" value="your.email@example.com" disabled>
+                                <p class="text-xs text-gray-500 mt-1">Email cannot be changed. Contact support if you need to update it.</p>
+                            </div>
+                            <button id="saveProfileChangesBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Account Information</h2>
+                        <div class="space-y-3 text-gray-600">
+                            <div class="flex justify-between items-center py-1">
+                                <span>Member Since</span>
+                                <span id="memberSinceDate">July 31, 2025</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span>Account Status</span>
+                                <span class="flex items-center text-green-500">
+                                    <span class="w-2.5 h-2.5 bg-green-500 rounded-full mr-2"></span> Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Back Button -->
+                    <div class="text-center mt-6">
+                        <button id="profileBackBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full transition-colors">
+                            ← Back to Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Privacy Settings View -->
+            <div id="dataPrivacySettingsView" class="hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Privacy Settings</h1>
+                    <p class="mt-2 text-gray-600">Control how your data is used and manage your personal data.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 max-w-2xl mx-auto w-full">
+                    <!-- Data Sharing Preferences -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Data Sharing Preferences</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Share anonymized data for research</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggleShareAnonymizedData">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                                <span>Allow personalized insights based on my data</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="togglePersonalizedInsights">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Your privacy is our priority. We only use your data to improve your experience and contribute to broader wellness research, always ensuring your anonymity.</p>
+                        </div>
+                    </div>
+
+                    <!-- Companion AI Data Consent (Moved from old modal) -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Companion AI Data Consent</h2>
+                        <p class="text-sm text-gray-600 mb-3">
+                            This controls whether your chat data with the Beam Companion is processed by the Gemini AI API.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span>Status: <span id="companionConsentStatusDataPrivacy" class="font-bold">Not Consented</span></span>
+                            <button id="toggleCompanionConsentBtnDataPrivacy" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full">
+                                Change Consent
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">
+                            *Clearing consent will disable the Companion feature until you re-consent.
+                        </p>
+                    </div>
+
+                    <!-- Health Connect Integration -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Health Connect Integration</h2>
+                        <p class="text-gray-600 mb-3">Manage your health data connections.</p>
+                        <div class="flex justify-between items-center py-1">
+                            <span>Current Status</span>
+                            <span class="flex items-center text-green-500">
+                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full mr-2"></span> Connected
+                            </span>
+                        </div>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full mt-4 w-full">
+                            Manage Health Connect Permissions
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">Control which health data categories Beam can access or disconnect entirely via your device's Health Connect settings.</p>
+                    </div>
+
+                    <!-- Your Data -->
+                    <div class="metric-card p-6">
+                        <h2 class="text-xl font-bold mb-4">Your Data</h2>
+                        <p class="text-gray-600 mb-3">Manage and control your personal data.</p>
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full w-full">
+                            Download My Data
+                        </button>
+                        <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full mt-3 w-full">
+                            Request Data Deletion
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">You have the right to request a copy of your data or its deletion. We will process your request in accordance with our Privacy Policy.</p>
+                    </div>
+
+                    <!-- Back Button -->
+                    <div class="text-center mt-6">
+                        <button id="dataPrivacyBackBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full transition-colors">
+                            ← Back to Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Score Analysis -->
+    <div id="scoreAnalysisModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="closeAnalysisModal">&times;</button>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Your Score Analysis</h2>
+            <p id="analysisOutput" class="text-gray-700 leading-relaxed"></p>
+            <div id="modalLoading" class="hidden mt-4 text-purple-600">Generating analysis...</div>
+        </div>
+    </div>
+
+    <!-- Privacy Consent Modal for Companion (Initial Opt-in - remains) -->
+    <div id="privacyConsentView" class="modal hidden">
+        <div class="modal-content text-center">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy for Your Beam Companion</h2>
+            <p class="text-gray-700 mb-6">
+                Your Beam Companion uses advanced Artificial Intelligence (AI) to understand your messages and provide helpful, empathetic responses.
+                To do this, your chat messages are sent to the Gemini AI API, which is operated by Google.
+                This means your data may be processed and stored on servers outside of Australia.
+            </p>
+            <p class="text-gray-700 mb-6 font-semibold">
+                By clicking "Accept & Continue", you consent to your chat data being processed by the Gemini AI API as described.
+                Your data will not be used to train the Gemini model unless you explicitly opt-in through Google's own settings.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <button id="acceptConsentBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                    Accept & Continue
+                </button>
+                <button id="declineConsentBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-full shadow-lg transition-colors duration-300 ease-in-out">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main application logic -->
+    <script type="module" src="beam-interactive-dashboard-main.js"></script>
+</body>
+</html>
