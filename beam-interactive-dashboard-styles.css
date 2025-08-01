@@ -1,0 +1,298 @@
+/* General Body and Font */
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: #374151; /* Default text color */
+    background-color: #f9fafb; /* Light background for the overall app */
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a202c; /* Dark background */
+    color: #e2e8f0; /* Light text */
+}
+
+body.dark-mode .bg-white {
+    background-color: #2d3748; /* Darker card/panel background */
+    color: #e2e8f0;
+}
+
+body.dark-mode .border-r {
+    border-color: #4a5568; /* Darker border */
+}
+
+body.dark-mode .border-b {
+    border-color: #4a5568; /* Darker border */
+}
+
+body.dark-mode .text-gray-800 {
+    color: #e2e8f0;
+}
+
+body.dark-mode .text-gray-900 {
+    color: #f7fafc;
+}
+
+body.dark-mode .text-gray-600 {
+    color: #cbd5e0;
+}
+
+body.dark-mode .text-gray-500 {
+    color: #a0aec0;
+}
+
+body.dark-mode .bg-gray-50 {
+    background-color: #2d3748;
+}
+
+body.dark-mode .bg-gray-100 {
+    background-color: #4a5568;
+}
+
+body.dark-mode .bg-purple-100 {
+    background-color: #5a32a3; /* A darker purple shade */
+    color: #e2e8f0;
+}
+
+body.dark-mode .bg-green-100 {
+    background-color: #1b4d2f; /* A darker green shade */
+    color: #e2e8f0;
+}
+
+body.dark-mode .border-gray-300 {
+    border-color: #4a5568;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: #4a5568;
+    color: #e2e8f0;
+    border-color: #6b7280;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #a0aec0;
+}
+
+body.dark-mode .metric-card {
+    background-color: #2d3748;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .progress-bar-inner {
+    background-color: #8b5cf6; /* Adjust for dark mode visibility */
+}
+
+/* Reduce Animations Mode */
+body.reduce-animations * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Sidebar Navigation Links */
+.nav-link {
+    @apply rounded-xl transition-colors duration-200 ease-in-out cursor-pointer;
+}
+
+.nav-link:hover {
+    @apply bg-purple-50 text-purple-700;
+}
+
+.nav-link.active {
+    @apply bg-purple-100 text-purple-800 font-semibold;
+}
+
+body.dark-mode .nav-link:hover {
+    @apply bg-gray-700 text-purple-300;
+}
+
+body.dark-mode .nav-link.active {
+    @apply bg-purple-800 text-white;
+}
+
+/* Metric Cards */
+.metric-card {
+    @apply bg-white p-6 rounded-2xl shadow-md;
+}
+
+/* Progress Bars */
+.progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2.5;
+}
+
+.progress-bar-inner {
+    @apply bg-purple-600 h-2.5 rounded-full;
+}
+
+/* Tags (e.g., for score changes) */
+.tag {
+    @apply text-xs font-semibold px-2.5 py-0.5 rounded-full;
+}
+
+.tag-yellow {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.tag-green {
+    @apply bg-green-100 text-green-800;
+}
+
+.tag-blue {
+    @apply bg-blue-100 text-blue-800;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+    @apply p-3 rounded-xl max-w-xs md:max-w-md shadow-sm;
+}
+
+.chat-bubble-user {
+    @apply bg-purple-500 text-white rounded-br-none;
+}
+
+.chat-bubble-bot {
+    @apply bg-gray-200 text-gray-800 rounded-bl-none;
+}
+
+body.dark-mode .chat-bubble-bot {
+    background-color: #4a5568;
+    color: #e2e8f0;
+}
+
+/* Modal Styles */
+.modal {
+    @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50;
+}
+
+.modal-content {
+    @apply bg-white p-8 rounded-2xl shadow-2xl max-w-lg w-full relative;
+}
+
+body.dark-mode .modal-content {
+    background-color: #2d3748;
+}
+
+.modal-close-btn {
+    @apply absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold;
+}
+
+body.dark-mode .modal-close-btn {
+    color: #cbd5e0;
+}
+
+/* Check-in Slider */
+input[type="range"] {
+    @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    @apply w-5 h-5 bg-purple-600 rounded-full appearance-none shadow-md;
+}
+
+input[type="range"]::-moz-range-thumb {
+    @apply w-5 h-5 bg-purple-600 rounded-full appearance-none shadow-md;
+}
+
+.slider-value {
+    @apply text-2xl font-bold text-purple-700 text-center mb-4;
+}
+
+/* Toggle Switch (for settings) */
+.toggle-switch {
+    @apply relative inline-block w-10 h-6;
+}
+
+.toggle-switch input {
+    @apply opacity-0 w-0 h-0;
+}
+
+.slider {
+    @apply absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 transition-colors duration-300 rounded-full;
+}
+
+.slider:before {
+    @apply absolute content-[''] h-4 w-4 left-1 bottom-1 bg-white transition-transform duration-300 rounded-full;
+}
+
+input:checked + .slider {
+    @apply bg-purple-600;
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+.slider.round {
+    @apply rounded-full;
+}
+
+.slider.round:before {
+    @apply rounded-full;
+}
+
+/* Profile Avatar */
+.profile-avatar {
+    @apply w-16 h-16 rounded-full bg-purple-200 text-purple-800 flex items-center justify-center text-2xl font-semibold flex-shrink-0;
+}
+
+body.dark-mode .profile-avatar {
+    background-color: #5a32a3;
+    color: #e2e8f0;
+}
+
+/* Video Placeholder Container (for Calm Space videos) */
+.video-placeholder-container {
+    @apply w-full bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center;
+    /* Ensure aspect ratio is handled by video element itself or a wrapper */
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+}
+
+.video-placeholder-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Reflection Block (for Calm Space emoji prompts) */
+.reflection-block {
+    @apply bg-purple-50 p-6 rounded-2xl shadow-md text-center mb-6;
+}
+
+body.dark-mode .reflection-block {
+    background-color: #3b0764; /* Darker purple for dark mode */
+}
+
+.emoji-button {
+    @apply text-5xl bg-transparent border-none cursor-pointer p-2 rounded-full hover:bg-purple-100 transition-colors duration-200;
+}
+
+body.dark-mode .emoji-button:hover {
+    background-color: #4a5568;
+}
+
+/* Utility for hidden elements */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments for mobile navigation */
+@media (max-width: 767px) {
+    .sidebar {
+        display: none;
+    }
+    .main-content {
+        width: 100%;
+    }
+    .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    .lg\:col-span-2 {
+        grid-column: auto;
+    }
+}
