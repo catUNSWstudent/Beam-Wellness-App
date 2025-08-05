@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beam: Calm Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Play/Pause Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* Light gray background, consistent with other Beam pages */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scroll behavior */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #374151; /* Default text color (gray-700) */
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* rounded-3xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 768px; /* md:max-w-2xl */
+            min-height: 80vh;
+            overflow: hidden;
+            padding: 24px; /* p-6 */
+        }
+        .card {
+            background-color: #f9fafb; /* bg-gray-50 for cards */
+            border-radius: 1rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* subtle shadow */
+            margin-bottom: 1.5rem;
+        }
+
+        /* Emotion Selection Buttons */
+        .emotion-button {
+            background-color: #EDE9FE; /* purple-100 */
+            color: #5B21B6; /* purple-800 */
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1rem 1.25rem;
+            font-weight: 600; /* font-semibold */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .emotion-button:hover {
+            background-color: #E5E0FF; /* slightly darker purple-100 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .emotion-button.active {
+            background-color: #8B5CF6; /* purple-500 */
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+            border-color: #6D28D9; /* purple-700 */
+        }
+        .emotion-button.active .emotion-icon {
+            color: white; /* Ensure icon is white when active */
+        }
+        .emotion-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #5B21B6; /* purple-800 */
+            transition: color 0.2s ease;
+        }
+
+        /* Breathing Circle */
+        .breath-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #C4B5FD; /* purple-300 */
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(196, 181, 253, 0.7);
+            animation: breathe 6s ease-in-out infinite;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        @keyframes breathe {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7); }
+        }
+
+        /* Audio Control Button */
+        .audio-control-button {
+            background-color: #8B5CF6; /* purple-500 */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .audio-control-button:hover {
+            background-color: #7C3AED; /* purple-600 */
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.5);
+        }
+
+        /* LLM Buttons */
+        .llm-button, .save-button {
+            background-color: #A78BFA; /* purple-400 */
+            color: white;
+            border: none;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: 0 2px 8px rgba(167, 139, 250, 0.3);
+        }
+        .llm-button:hover, .save-button:hover {
+            background-color: #8B5CF6; /* purple-500 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+        .llm-button:disabled, .save-button:disabled {
+            background-color: #D1D5DB; /* gray-300 */
+            color: #9CA3AF; /* gray-400 */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .output-box {
+            background-color: #F3F4F6; /* gray-100 */
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #4B5563; /* gray-700 */
+            font-style: italic;
+            line-height: 1.5;
+            border: 1px solid #E5E7EB; /* gray-200 */
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8B5CF6; /* purple-500 */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1.5rem auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Video specific styles */
+        .video-container {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .video-container video {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .video-container p {
+            font-size: 0.875rem; /* text-sm */
+            color: #6B7280; /* gray-500 */
+            margin-top: 0.5rem;
+        }
+
+        /* Journaling Textarea */
+        textarea.journal-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #D1D5DB; /* gray-300 */
+            background-color: #FFFFFF; /* White background for input */
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #1F2937; /* gray-900 */
+            resize: vertical; /* Allow vertical resizing */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        textarea.journal-input:focus {
+            border-color: #8B5CF6; /* purple-500 */
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .message-box {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .message-box.show {
+            opacity: 1;
+        }
+        .message-box.success {
+            background-color: #D1FAE5; /* green-100 */
+            color: #065F46; /* green-800 */
+        }
+        .message-box.error {
+            background-color: #FEE2E2; /* red-100 */
+            color: #991B1B; /* red-800 */
+        }
+        .message-box.info {
+            background-color: #E0F2FE; /* blue-100 */
+            color: #0C4A6E; /* blue-800 */
+        }
+
+
+        /* Privacy Consent Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 560px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">Your Calm Space</h1>
+        <p class="text-gray-600 mb-8 text-center">Find peace and insight by exploring your emotions.</p>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">How are you feeling right now?</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="emotion-button" data-mood="calm">
+                    <span class="emotion-icon">😌</span> Calm
+                </button>
+                <button class="emotion-button" data-mood="fatigue">
+                    <span class="emotion-icon">😴</span> Fatigue
+                </button>
+                <button class="emotion-button" data-mood="hopeful">
+                    <span class="emotion-icon">✨</span> Hopeful
+                </button>
+                <button class="emotion-button" data-mood="overstimulated">
+                    <span class="emotion-icon">🤯</span> Overstimulated
+                </button>
+            </div>
+        </div>
+
+        <div class="card flex flex-col items-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Mindfulness Moment</h2>
+            <div class="breath-circle" id="breathCircle"></div>
+            <button id="audioControlBtn" class="audio-control-button" style="display: none;">
+                <i class="fas fa-play" id="audioIcon"></i>
+            </button>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">AI-Powered Insights</h2>
+            <button id="generateInsightBtn" class="llm-button">Gain Insight ✨</button>
+            <div id="insightLoading" class="loading-spinner"></div>
+            <div id="insightOutput" class="output-box">Select an emotion to get an insight.</div>
+            <button id="listenInsightBtn" class="llm-button" style="display: none;">Listen to Insight ✨</button>
+            <div id="audioLoading" class="loading-spinner"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Journaling Prompt</h2>
+            <button id="generateJournalPromptBtn" class="llm-button">Generate Journal Prompt ✨</button>
+            <div id="journalPromptLoading" class="loading-spinner"></div>
+            <div id="journalPromptOutput" class="output-box">Your journaling prompt will appear here.</div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Journal Entry</h2>
+            <textarea id="journalEntryInput" class="journal-input" placeholder="Write your thoughts and reflections here..."></textarea>
+            <button id="saveJournalEntryBtn" class="save-button">Save Journal Entry</button>
+            <div id="journalSaveMessage" class="message-box"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Guided Meditation Scripts</h2>
+            <button id="generateMeditationScriptBtn" class="llm-button">Generate Meditation Script ✨</button>
+            <div id="meditationScriptLoading" class="loading-spinner"></div>
+            <div id="meditationScriptOutput" class="output-box">Your meditation script will appear here.</div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Pre-recorded Meditations</h2>
+            <div class="space-y-6">
+                <div class="video-container">
+                    <video id="meditationVideo1" controls preload="none" class="w-full rounded-lg shadow-md">
+                        <source src="https://storage.googleapis.com/example-bucket-1beamtrialversion/Download%20Guided_meditation_audio_fixed_v2.MP4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="text-sm text-gray-600 mt-2">Guided Meditation (Audio Fixed)</p>
+                </div>
+                <div class="video-container">
+                    <video id="meditationVideo2" controls preload="none" class="w-full rounded-lg shadow-md">
+                        <source src="https://storage.googleapis.com/example-bucket-1beamtrialversion/Download%20Meditation_1_trimmed_25s.MP4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="text-sm text-gray-600 mt-2">Short Meditation (25s)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Consent Modal for AI Features and Data Storage -->
+    <div id="privacyConsentModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy for AI Features & Data Storage</h2>
+            <p class="text-gray-700 mb-6">
+                To provide insights, audio responses, journaling prompts, and meditation scripts, this page uses the Gemini AI API, operated by Google.
+                This means your selected emotion and any generated text will be sent to the Gemini AI API for processing.
+            </p>
+            <p class="text-gray-700 mb-6">
+                Additionally, your **journal entries will be securely saved** in a database to help you track your reflections over time.
+            </p>
+            <p class="text-gray-700 mb-6 font-semibold">
+                By clicking "Accept & Continue", you consent to this data being processed by the Gemini AI API and your journal entries being stored.
+                Your data will not be used to train the Gemini model unless you explicitly opt-in through Google's own settings.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <button id="acceptConsentBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                    Accept & Continue
+                </button>
+                <button id="declineConsentBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-full shadow-lg transition-colors duration-300 ease-in-out">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+        // Firebase Configuration (provided by Canvas environment or default for standalone)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'standalone-calm-space-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            // Default config for local standalone testing if not in Canvas
+            apiKey: "YOUR_FIREBASE_API_KEY", // Replace with your actual Firebase API Key if running outside Canvas
+            authDomain: "your-project-id.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "...",
+            appId: "...",
+            measurementId: "..."
+        };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- UI Element References ---
+        const emotionButtons = document.querySelectorAll('.emotion-button');
+        const breathCircle = document.getElementById('breathCircle');
+        const generateInsightBtn = document.getElementById('generateInsightBtn');
+        const insightOutput = document.getElementById('insightOutput');
+        const insightLoading = document.getElementById('insightLoading');
+        const listenInsightBtn = document.getElementById('listenInsightBtn');
+        const audioLoading = document.getElementById('audioLoading');
+        const audioControlBtn = document.getElementById('audioControlBtn');
+        const audioIcon = document.getElementById('audioIcon');
+        const privacyConsentModal = document.getElementById('privacyConsentModal');
+        const acceptConsentBtn = document.getElementById('acceptConsentBtn');
+        const declineConsentBtn = document.getElementById('declineConsentBtn');
+
+        // Journal Prompt UI elements
+        const generateJournalPromptBtn = document.getElementById('generateJournalPromptBtn');
+        const journalPromptLoading = document.getElementById('journalPromptLoading');
+        const journalPromptOutput = document.getElementById('journalPromptOutput');
+
+        // New Journal Entry UI elements
+        const journalEntryInput = document.getElementById('journalEntryInput');
+        const saveJournalEntryBtn = document.getElementById('saveJournalEntryBtn');
+        const journalSaveMessage = document.getElementById('journalSaveMessage');
+
+        // Meditation Script UI elements
+        const generateMeditationScriptBtn = document.getElementById('generateMeditationScriptBtn');
+        const meditationScriptLoading = document.getElementById('meditationScriptLoading');
+        const meditationScriptOutput = document.getElementById('meditationScriptOutput');
+
+        // Video elements
+        const meditationVideo1 = document.getElementById('meditationVideo1');
+        const meditationVideo2 = document.getElementById('meditationVideo2');
+
+
+        let selectedMood = null;
+        let currentInsightText = '';
+        let currentAudio = null;
+        let isPlaying = false;
+        let audioContext = null; // Global AudioContext for robust audio playback
+        let aiConsentGiven = localStorage.getItem('calmSpaceAIConsentStandalone') === 'true';
+        let isAuthReady = false; // Flag to indicate Firebase auth is ready
+        let currentUserId = null; // To store the authenticated user ID
+
+        // Map moods to audio file URLs
+        const audioTracks = {
+            'calm': 'https://storage.googleapis.com/example-bucket-1beamtrialversion/heavenly-ambient-beauty-SBA-346417096-preview.mp3',
+            'fatigue': 'https://storage.googleapis.com/example-bucket-1beamtrialversion/deep-meditation-SBA-300539043-preview.mp3',
+            'hopeful': 'https://storage.googleapis.com/example-bucket-1beamtrialversion/ambient-yoga-tension-and-release-healing-SBA-300554793-preview.mp3',
+            'overstimulated': 'https://storage.googleapis.com/example-bucket-1beamtrialversion/inner-peace-meditative-ambient-beauty-nature-bed-SBA-346420567-preview.mp3'
+        };
+
+        // --- Utility Functions ---
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `message-box ${type} show`;
+            setTimeout(() => {
+                element.classList.remove('show');
+                element.textContent = ''; // Clear message after fading out
+            }, 5000);
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // --- Privacy Consent Logic ---
+        if (!aiConsentGiven) {
+            privacyConsentModal.classList.remove('hidden');
+            // Disable all interactive elements that rely on AI or data storage
+            generateInsightBtn.disabled = true;
+            listenInsightBtn.disabled = true;
+            audioControlBtn.disabled = true;
+            generateJournalPromptBtn.disabled = true;
+            generateMeditationScriptBtn.disabled = true;
+            journalEntryInput.disabled = true;
+            saveJournalEntryBtn.disabled = true;
+        }
+
+        acceptConsentBtn.addEventListener('click', () => {
+            localStorage.setItem('calmSpaceAIConsentStandalone', 'true');
+            aiConsentGiven = true;
+            privacyConsentModal.classList.add('hidden');
+            if (isAuthReady) { // Only enable if consent was also given
+                // Re-enable all interactive elements
+                generateInsightBtn.disabled = false;
+                audioControlBtn.disabled = false;
+                generateJournalPromptBtn.disabled = false;
+                generateMeditationScriptBtn.disabled = false;
+                journalEntryInput.disabled = false;
+                saveJournalEntryBtn.disabled = false;
+                loadJournalEntry(); // Load journal entry if consent is given
+            }
+        });
+
+        declineConsentBtn.addEventListener('click', () => {
+            localStorage.setItem('calmSpaceAIConsentStandalone', 'false');
+            aiConsentGiven = false;
+            privacyConsentModal.classList.add('hidden');
+            // Disable all interactive elements
+            generateInsightBtn.disabled = true;
+            listenInsightBtn.disabled = true;
+            audioControlBtn.disabled = true;
+            generateJournalPromptBtn.disabled = true;
+            generateMeditationScriptBtn.disabled = true;
+            journalEntryInput.disabled = true;
+            saveJournalEntryBtn.disabled = true;
+
+            insightOutput.textContent = "AI features disabled due to privacy settings.";
+            journalPromptOutput.textContent = "AI features disabled due to privacy settings.";
+            meditationScriptOutput.textContent = "AI features disabled due to privacy settings.";
+            journalEntryInput.value = "Journaling is disabled. Please accept privacy consent to use this feature.";
+            showMessage(journalSaveMessage, "Journaling is disabled. Please accept privacy consent to save entries.", "error");
+
+            stopAllAudio();
+            pauseAllVideos();
+        });
+
+        // --- Firebase Authentication ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                isAuthReady = true;
+                console.log("Signed in anonymously as:", currentUserId);
+                if (aiConsentGiven) { // Only enable if consent was also given
+                    generateInsightBtn.disabled = false;
+                    audioControlBtn.disabled = false;
+                    generateJournalPromptBtn.disabled = false;
+                    generateMeditationScriptBtn.disabled = false;
+                    journalEntryInput.disabled = false;
+                    saveJournalEntryBtn.disabled = false;
+                    loadJournalEntry(); // Load journal entry for the authenticated user
+                }
+            } else {
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Error signing in anonymously:", error);
+                    insightOutput.textContent = "Failed to authenticate. AI features may not work.";
+                    journalPromptOutput.textContent = "Failed to authenticate. AI features may not work.";
+                    meditationScriptOutput.textContent = "Failed to authenticate. AI features may not work.";
+                    journalEntryInput.value = "Authentication failed. Journaling is disabled.";
+                    showMessage(journalSaveMessage, "Authentication failed. Cannot save journal entries.", "error");
+
+                    generateInsightBtn.disabled = true;
+                    listenInsightBtn.disabled = true;
+                    audioControlBtn.disabled = true;
+                    generateJournalPromptBtn.disabled = true;
+                    generateMeditationScriptBtn.disabled = true;
+                    journalEntryInput.disabled = true;
+                    saveJournalEntryBtn.disabled = true;
+                    isAuthReady = false;
+                }
+            }
+        });
+
+        // Function to initialize or resume AudioContext
+        async function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                try {
+                    await audioContext.resume();
+                } catch (e) {
+                    console.error("Error resuming AudioContext:", e);
+                    showMessage(insightOutput, "Audio playback might be blocked by your browser. Please interact with the page.", "error");
+                }
+            }
+            return audioContext;
+        }
+
+        // Function to stop any currently playing audio
+        function stopAllAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            isPlaying = false;
+            audioIcon.classList.remove('fa-pause');
+            audioIcon.classList.add('fa-play');
+            audioControlBtn.style.display = 'none';
+        }
+
+        // Function to pause all video elements
+        function pauseAllVideos() {
+            if (meditationVideo1) meditationVideo1.pause();
+            if (meditationVideo2) meditationVideo2.pause();
+        }
+
+        // Helper to convert base64 to ArrayBuffer (for TTS)
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Helper to write string to DataView (for WAV header)
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Helper to convert PCM (Int16Array) to WAV Blob
+        function pcmToWav(pcm16, sampleRate) {
+            const dataLength = pcm16.length * 2;
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // RIFF identifier
+            writeString(view, 0, 'RIFF');
+            // file length
+            view.setUint32(4, 36 + dataLength, true);
+            // RIFF type
+            writeString(view, 8, 'WAVE');
+            // format chunk identifier
+            view.setUint32(12, 0x20746D66, true); // 'fmt '
+            // format chunk length
+            view.setUint32(16, 16, true);
+            // sample format (raw PCM)
+            view.setUint16(20, 1, true); // Mono
+            // channel count
+            view.setUint16(22, 1, true); // Mono
+            // sample rate
+            view.setUint32(24, sampleRate, true);
+            // byte rate (sample rate * block align)
+            view.setUint32(28, sampleRate * 2, true);
+            // block align (channel count * bytes per sample)
+            view.setUint16(32, 2, true);
+            // bits per sample
+            view.setUint16(34, 16, true);
+            // data chunk identifier
+            writeString(view, 36, 'data');
+            // data chunk length
+            view.setUint32(40, dataLength, true);
+
+            // Write the PCM data
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        // Function to update breath circle color based on mood
+        const updateBreathCircleColor = (mood) => {
+            let circleColor = '#C4B5FD'; // Default purple-300
+
+            switch(mood) {
+                case 'calm':
+                    circleColor = '#A7D3E9'; // A light blue/cyan for calm
+                    break;
+                case 'fatigue':
+                    circleColor = '#9CA3AF'; // A darker gray for fatigue
+                    break;
+                case 'hopeful':
+                    circleColor = '#FDE68A'; // A light yellow/gold for hopeful
+                    break;
+                case 'overstimulated':
+                    circleColor = '#FCA5A5'; // A light red/pink for overstimulated
+                    break;
+                default:
+                    circleColor = '#C4B5FD';
+            }
+            breathCircle.style.backgroundColor = circleColor;
+            breathCircle.style.boxShadow = `0 0 20px ${circleColor}70`;
+        };
+
+        emotionButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                await initAudioContext(); // Ensure audio context is ready
+
+                emotionButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                selectedMood = button.dataset.mood;
+                updateBreathCircleColor(selectedMood);
+
+                // Reset outputs and loading states for LLM features
+                insightOutput.textContent = `Selected emotion: ${selectedMood}. Click "Gain Insight ✨" to learn more.`;
+                currentInsightText = '';
+                listenInsightBtn.style.display = 'none';
+                insightLoading.style.display = 'none';
+                audioLoading.style.display = 'none';
+
+                journalPromptOutput.textContent = "Your journaling prompt will appear here.";
+                journalPromptLoading.style.display = 'none';
+
+                meditationScriptOutput.textContent = "Your meditation script will appear here.";
+                meditationScriptLoading.style.display = 'none';
+
+                // Play associated audio track
+                const trackUrl = audioTracks[selectedMood];
+                if (trackUrl) {
+                    stopAllAudio(); // Stop previous ambient audio if any
+                    pauseAllVideos(); // Pause any playing videos
+                    currentAudio = new Audio(trackUrl);
+                    currentAudio.loop = true;
+                    try {
+                        await currentAudio.play();
+                        isPlaying = true;
+                        audioIcon.classList.remove('fa-play');
+                        audioIcon.classList.add('fa-pause');
+                        audioControlBtn.style.display = 'flex';
+                    } catch (playError) {
+                        console.error("Error playing audio on emotion click:", playError);
+                        showMessage(insightOutput, "Error playing audio. Your browser might require a direct interaction to play media.", "error");
+                        stopAllAudio();
+                    }
+                } else {
+                    stopAllAudio(); // Stop audio if no track for selected mood
+                }
+            });
+        });
+
+        // Audio Play/Pause control for ambient music
+        audioControlBtn.addEventListener('click', async () => {
+            await initAudioContext();
+
+            if (currentAudio) {
+                if (isPlaying) {
+                    currentAudio.pause();
+                    audioIcon.classList.remove('fa-pause');
+                    audioIcon.classList.add('fa-play');
+                } else {
+                    pauseAllVideos(); // Pause videos before playing ambient audio
+                    try {
+                        await currentAudio.play();
+                        audioIcon.classList.remove('fa-play');
+                        audioIcon.classList.add('fa-pause');
+                    } catch (playError) {
+                        console.error("Error resuming audio playback:", playError);
+                        showMessage(insightOutput, "Error resuming audio. Please try again.", "error");
+                        stopAllAudio();
+                    }
+                }
+                isPlaying = !isPlaying;
+            }
+        });
+
+        // Event listeners for videos to pause ambient audio
+        if (meditationVideo1) {
+            meditationVideo1.addEventListener('play', () => {
+                stopAllAudio();
+            });
+        }
+        if (meditationVideo2) {
+            meditationVideo2.addEventListener('play', () => {
+                stopAllAudio();
+            });
+        }
+
+        // Initial setup for emotion selection on page load
+        function initializeEmotionSelection() {
+            // Default to 'calm' if no mood is selected, and apply active style
+            if (!selectedMood && emotionButtons.length > 0) {
+                emotionButtons[0].classList.add('active');
+                selectedMood = emotionButtons[0].dataset.mood;
+                updateBreathCircleColor(selectedMood);
+                insightOutput.textContent = `Selected emotion: ${selectedMood}. Click "Gain Insight ✨" to learn more.`;
+            } else if (selectedMood) {
+                // If a mood was previously selected (e.g., from a session), re-apply active class
+                const previouslyActiveButton = document.querySelector(`.emotion-button[data-mood="${selectedMood}"]`);
+                if (previouslyActiveButton) {
+                    previouslyActiveButton.classList.add('active');
+                }
+                updateBreathCircleColor(selectedMood);
+            }
+            // Audio will only start when a user explicitly clicks an emotion button.
+        }
+
+        // --- Gemini API Integration for Insight Generation ---
+        generateInsightBtn.addEventListener("click", async () => {
+            if (!aiConsentGiven) {
+                showMessage(insightOutput, "Please accept privacy consent to use AI features.", "error");
+                privacyConsentModal.classList.remove('hidden');
+                return;
+            }
+            if (!selectedMood) {
+                showMessage(insightOutput, "Please select an emotion first.", "info");
+                return;
+            }
+            if (!isAuthReady) {
+                showMessage(insightOutput, "Please wait for authentication to complete.", "info");
+                return;
+            }
+
+            insightOutput.textContent = '';
+            insightLoading.style.display = 'block';
+            generateInsightBtn.disabled = true;
+            listenInsightBtn.style.display = 'none';
+            audioLoading.style.display = 'none';
+
+            const prompt = `Provide a short, empathetic, and insightful affirmation for someone feeling "${selectedMood}". Focus on encouragement and gentle self-compassion. Keep it concise, no more than 20 words.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let retries = 0;
+            const maxRetries = 5;
+            const baseDelay = 1000;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        insightOutput.textContent = text;
+                        currentInsightText = text;
+                        listenInsightBtn.style.display = 'block';
+                        break;
+                    } else {
+                        showMessage(insightOutput, "Could not generate affirmation. Please try again.", "error");
+                        currentInsightText = '';
+                        break;
+                    }
+                } catch (error) {
+                    console.error("Error generating affirmation:", error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        showMessage(insightOutput, "Failed to generate affirmation after multiple retries.", "error");
+                        currentInsightText = '';
+                    }
+                } finally {
+                    if (retries >= maxRetries || (insightOutput.textContent !== '' && insightLoading.style.display === 'block')) {
+                        insightLoading.style.display = 'none';
+                        generateInsightBtn.disabled = false;
+                    }
+                }
+            }
+        });
+
+        // --- Gemini API Integration for Text-to-Speech ---
+        listenInsightBtn.addEventListener("click", async () => {
+            if (!aiConsentGiven) {
+                showMessage(insightOutput, "Please accept privacy consent to use AI features.", "error");
+                privacyConsentModal.classList.remove('hidden');
+                return;
+            }
+            if (!currentInsightText) {
+                showMessage(insightOutput, "Please generate an affirmation first!", "info");
+                return;
+            }
+            if (!isAuthReady) {
+                showMessage(insightOutput, "Please wait for authentication to complete.", "info");
+                return;
+            }
+
+            audioLoading.style.display = 'block';
+            listenInsightBtn.disabled = true;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: currentInsightText }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Kore" }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            let retries = 0;
+            const maxRetries = 5;
+            const baseDelay = 1000;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000;
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+
+                        const audio = new Audio(audioUrl);
+                        await initAudioContext();
+                        audio.play();
+
+                        audio.onended = () => {
+                            URL.revokeObjectURL(audioUrl);
+                        };
+                        break;
+                    } else {
+                        showMessage(insightOutput, "Could not play audio. Invalid format.", "error");
+                        break;
+                    }
+                } catch (error) {
+                    console.error("Error generating or playing audio:", error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        showMessage(insightOutput, "Failed to generate audio after multiple retries.", "error");
+                    }
+                } finally {
+                    if (retries >= maxRetries || audioLoading.style.display === 'block') {
+                        audioLoading.style.display = 'none';
+                        listenInsightBtn.disabled = false;
+                    }
+                }
+            }
+        });
+
+        // --- Gemini API Integration for Journal Prompt Generation ---
+        generateJournalPromptBtn.addEventListener("click", async () => {
+            if (!aiConsentGiven) {
+                showMessage(journalPromptOutput, "Please accept privacy consent to use AI features.", "error");
+                privacyConsentModal.classList.remove('hidden');
+                return;
+            }
+            if (!selectedMood) {
+                showMessage(journalPromptOutput, "Please select an emotion first.", "info");
+                return;
+            }
+            if (!isAuthReady) {
+                showMessage(journalPromptOutput, "Please wait for authentication to complete.", "info");
+                return;
+            }
+
+            journalPromptOutput.textContent = '';
+            journalPromptLoading.style.display = 'block';
+            generateJournalPromptBtn.disabled = true;
+
+            const prompt = `Generate a personalized journaling prompt (1-2 sentences) for someone feeling "${selectedMood}", encouraging self-reflection and exploration of their current state.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let retries = 0;
+            const maxRetries = 5;
+            const baseDelay = 1000;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        journalPromptOutput.textContent = text;
+                        break;
+                    } else {
+                        showMessage(journalPromptOutput, "Could not generate journaling prompt. Please try again.", "error");
+                        break;
+                    }
+                } catch (error) {
+                    console.error("Error generating journaling prompt:", error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        showMessage(journalPromptOutput, "Failed to generate journaling prompt after multiple retries.", "error");
+                    }
+                } finally {
+                    if (retries >= maxRetries || (journalPromptOutput.textContent !== '' && journalPromptLoading.style.display === 'block')) {
+                        journalPromptLoading.style.display = 'none';
+                        generateJournalPromptBtn.disabled = false;
+                    }
+                }
+            }
+        });
+
+        // --- Gemini API Integration for Meditation Script Generation ---
+        generateMeditationScriptBtn.addEventListener("click", async () => {
+            if (!aiConsentGiven) {
+                showMessage(meditationScriptOutput, "Please accept privacy consent to use AI features.", "error");
+                privacyConsentModal.classList.remove('hidden');
+                return;
+            }
+            if (!selectedMood) {
+                showMessage(meditationScriptOutput, "Please select an emotion first.", "info");
+                return;
+            }
+            if (!isAuthReady) {
+                showMessage(meditationScriptOutput, "Please wait for authentication to complete.", "info");
+                return;
+            }
+
+            meditationScriptOutput.textContent = '';
+            meditationScriptLoading.style.display = 'block';
+            generateMeditationScriptBtn.disabled = true;
+
+            const prompt = `Generate a short guided meditation script (around 50-70 words) for someone feeling "${selectedMood}". Focus on gentle guidance, breathing, and finding inner peace.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let retries = 0;
+            const maxRetries = 5;
+            const baseDelay = 1000;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        meditationScriptOutput.textContent = text;
+                        break;
+                    } else {
+                        showMessage(meditationScriptOutput, "Could not generate meditation script. Please try again.", "error");
+                        break;
+                    }
+                } catch (error) {
+                    console.error("Error generating meditation script:", error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        showMessage(meditationScriptOutput, "Failed to generate meditation script after multiple retries.", "error");
+                    }
+                } finally {
+                    if (retries >= maxRetries || (meditationScriptOutput.textContent !== '' && meditationScriptLoading.style.display === 'block')) {
+                        meditationScriptLoading.style.display = 'none';
+                        generateMeditationScriptBtn.disabled = false;
+                    }
+                }
+            }
+        });
+
+        // --- Journaling Save/Load Functions ---
+        saveJournalEntryBtn.addEventListener('click', async () => {
+            if (!aiConsentGiven) { // Using aiConsentGiven for data storage consent as well
+                showMessage(journalSaveMessage, "Please accept privacy consent to save journal entries.", "error");
+                privacyConsentModal.classList.remove('hidden');
+                return;
+            }
+            if (!isAuthReady || !currentUserId) {
+                showMessage(journalSaveMessage, "Authentication not ready. Cannot save entry.", "error");
+                return;
+            }
+
+            const entryText = journalEntryInput.value.trim();
+            if (!entryText) {
+                showMessage(journalSaveMessage, "Journal entry cannot be empty.", "info");
+                return;
+            }
+
+            const today = formatDate(new Date());
+            const journalDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/journalEntries`, today);
+
+            try {
+                await setDoc(journalDocRef, {
+                    date: today,
+                    content: entryText,
+                    timestamp: new Date()
+                });
+                showMessage(journalSaveMessage, "Journal entry saved successfully!", "success");
+            } catch (error) {
+                console.error("Error saving journal entry:", error);
+                showMessage(journalSaveMessage, "Failed to save journal entry. Please try again.", "error");
+            }
+        });
+
+        async function loadJournalEntry() {
+            if (!isAuthReady || !currentUserId || !aiConsentGiven) {
+                return; // Don't try to load if not authenticated or consent not given
+            }
+
+            const today = formatDate(new Date());
+            const journalDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/journalEntries`, today);
+
+            try {
+                const docSnap = await getDoc(journalDocRef);
+                if (docSnap.exists()) {
+                    journalEntryInput.value = docSnap.data().content || '';
+                    showMessage(journalSaveMessage, "Loaded today's journal entry.", "info");
+                } else {
+                    journalEntryInput.value = ''; // Clear if no entry for today
+                    showMessage(journalSaveMessage, "No journal entry for today. Start writing!", "info");
+                }
+            } catch (error) {
+                console.error("Error loading journal entry:", error);
+                showMessage(journalSaveMessage, "Failed to load today's journal entry.", "error");
+            }
+        }
+
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeEmotionSelection();
+            // The Firebase auth listener will handle enabling/disabling buttons
+            // and loading journal entry based on authentication and consent status.
+        });
+    </script>
+</body>
+</html>
